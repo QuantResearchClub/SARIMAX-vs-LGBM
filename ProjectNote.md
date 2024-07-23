@@ -1,19 +1,33 @@
+
+拿到收盘价单
+- Get to know what kind of data can we access from the yfinance? Open, High, Low, Close, Volume
+- Get to know how to store these data? pdDataframe
+- Get to know what data we need for QLib?
+- Write good maniputable functions for processing the Qlib data. Done
+
+Qlib
+- 优点 好像非常便捷
+- 缺点 在安装环境上遇到了比较大的困难
+- 缺点 在函数上无法使用, 非常难受 (包括qlib.contribut以及其它函数无法使用)
+
+改用gluonts
+from gluonts.ext.r_forecast import RForecastPredictor
+https://ts.gluon.ai/stable/api/gluonts/gluonts.ext.r_forecast.html
+https://zhihu.com/column/c_1258782761349410816
+
+![alt text](image.png)
+
+
+旧版本 不知道该怎么改:
+```python
 import optuna
 import math
 import warnings
-import time
+warnings.filterwarnings("ignore")
 
 import pandas as pd
 import lightgbm as lgb
 import numpy as np
-
-# ARIMA
-# -----------------------------------------------
-import statsmodels.api as sm
-from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
-
-warnings.filterwarnings("ignore")
 
 class TimeSeries():
     def __init__(self):
@@ -37,7 +51,6 @@ class TimeSeries():
         return self
 
     # Objective Function Definition
-    # DAWEI
     # --------------------------------------------------------------------------------------------
     def objective_fn(self, trial):
         params = {# 'num_leaves': trial.suggest_int('num_leaves', 2, 50),
@@ -90,44 +103,7 @@ class TimeSeries():
         # Output the best hyperparameters and the best score
         best_params = study.best_params
         print(f"Best hyperparameters: {best_params}")
-    
-    
-    
-    # ARIMA - CUIYUAN
-    # --------------------------------------------------------------------------------------------
-    # The (p,d,q) order of the model for the autoregressive, differences, and moving average components. 
-    # d is always an integer, while p and q may either be integers or lists of integers.
-    def ARIMA_predict(self, target, column, p, d, q, filename):
-        testSet = self.testSet
-        trainSet = self.validSet
-        # print(trainSet)
-        # print(testSet)
+```
 
-        model = sm.tsa.statespace.SARIMAX(
-            endog = trainSet[target], 
-            exog  = trainSet[column],
-            order = (p,d,q),
-            seasonal_order = (0, 1, 1, 12)
-        )
-        arima_result = model.fit()
-        # print(arima_result.summary())
-        test_pred = arima_result.forecast(
-            steps = testSet.shape[0],
-            exog  = testSet[column]
-        )
+可恶啊
 
-        # mse = mean_squared_error(test_pred, testSet)
-        test_pred.index = testSet.index
-
-        plt.clf()
-        plt.plot(testSet[target][1:], color = "blue")
-        plt.plot(test_pred[1:], color = "green")
-        plt.xlabel("Date")
-        plt.ylabel("Close Price")
-        plt.savefig(f"Images\\{filename}.png")
-
-        resultDF = testSet[[target]].copy()
-        resultDF = resultDF.join(test_pred)
-
-        return resultDF
-    # --------------------------------------------------------------------------------------------
