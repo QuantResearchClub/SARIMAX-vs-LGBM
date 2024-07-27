@@ -1,4 +1,4 @@
-## Project:
+# Project:
 每个小组将创建一个由至多10只股票组成的投资组合，在纳斯达克、富时和新交所三个市场中的任何一个公开交易。所有投资组合股票必须在2024年8月1日之前交易至少一年。每个小组都需要研究能够自动更新10只股票组合交易策略的模型和方法。在2024M1 ~ 2024M6(1到6月, 作为验证期，允许策略更新)和 2022M7(测试期，固定策略，不更新) 进行性能评估。投资组合中的股票列表及其从2024年1月1日至2024年7月31日的每日收盘价必须以CSV文件的形式与项目演示文稿一起提交。
 ###要求:
 #### 文件格式:
@@ -31,3 +31,57 @@
   - Duration: A Portfolio (10 Stocks) in price within 1 month.
   - 初步想法: 从图形上确定第二天价格是更贵还是更低, 如果第二天的价格是更改的, 就采取买入, 然后在第二天卖出。
 - 然后找一篇关于Portfolio优化的论文, 按照这个论文去干, 我觉得可以试一下拿FinAgent实现, 或者再找找别的工具 (July 07)，
+
+# 计算参数:
+- `sd_m` standard deviation by month
+- `sd_w` standard deviation by week.
+- `bollinger_strat` 布林格参数, 用于估计股票的波动范围
+- `heikin_ashi` HA, 用于估计受市场噪音的影响
+- `logret`
+- `stochastic_oscillator`
+- `bears_bulls_power`
+- `rsi`
+- `logret`
+- `mom`
+- `obv`
+- `accum_distribute`
+- `aroon`
+- `atr`
+
+### 1. standard deviation
+We calculate the standard deviation by months and by weeks for further calculations.
+
+### 2. bollinger_strat
+By using Bollinger_strat, we could get a rough **range of the fluctuation of the share price**. Bollinger_strat is consist of by the upper, middle and the lower lines, while these lines could be considered as the pressure line, average line and the supporting line of the share price. The share price is fluctuating between the upper line and lower line.
+```math
+BOLU = MA(TP, n) + m \times \sigma[TP, n]
+BOLL = MA(TP, n) - m \times \sigma[TP, n]
+```
+where,
+- MA represents the moving average calculated by the mean value of share price during such period of time,
+- $\sigma$ represents the standard deviation of such period of time,
+- m = 2, parameter of the standard deviation.
+- $TP = (High + Close + Open) / 3$ represents the typical price.
+
+Reference:
+- https://skilling.com/row/cn/blog/trading-articles/what-are-bollinger-bands/
+- https://www.investopedia.com/trading/using-bollinger-bands-to-gauge-trends/
+
+### 3. heikin_ashi 日本蜡烛图
+The Heikin-Ashi technique averages price data to create a Japanese candlestick chart that filters out market noise. 
+```
+Market Noise
+Noise refers to information or activity that confuses or misrepresents genuine underlying trends.
+```
+Heikin-Ashi provides a more smoother appearance for a easier spot of trends and reversals in contrast of directly using OPEN, HIGH LOW and CLOSE, but this also obscures gaps and some price data.
+```math
+HA_open = (HA_open_{-1} + HA_close_{-1}) / 2
+HA_close = (HA_open_{0} + HA_close_{0} + HA_high_{0} + HA_low_{0}) / 4
+```
+where,
+- 0 represents the current state, -1 represents the previous state.
+
+Reference:
+- https://www.investopedia.com/terms/h/heikinashi.asp
+
+
