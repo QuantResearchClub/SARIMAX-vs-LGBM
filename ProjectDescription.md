@@ -55,6 +55,8 @@ We calculate the standard deviation by months and by weeks for further calculati
 By using Bollinger_strat, we could get a rough **range of the fluctuation of the share price**. Bollinger_strat is consist of by the upper, middle and the lower lines, while these lines could be considered as the pressure line, average line and the supporting line of the share price. The share price is fluctuating between the upper line and lower line.
 ```math
 BOLU = MA(TP, n) + m \times \sigma[TP, n]
+```
+```math
 BOLL = MA(TP, n) - m \times \sigma[TP, n]
 ```
 where,
@@ -67,6 +69,7 @@ Reference:
 - https://skilling.com/row/cn/blog/trading-articles/what-are-bollinger-bands/
 - https://www.investopedia.com/trading/using-bollinger-bands-to-gauge-trends/
 
+
 ### 3. heikin_ashi 日本蜡烛图
 The Heikin-Ashi technique averages price data to create a Japanese candlestick chart that filters out market noise. 
 ```
@@ -76,6 +79,8 @@ Noise refers to information or activity that confuses or misrepresents genuine u
 Heikin-Ashi provides a more smoother appearance for a easier spot of trends and reversals in contrast of directly using OPEN, HIGH LOW and CLOSE, but this also obscures gaps and some price data.
 ```math
 HA_open = (HA_open_{-1} + HA_close_{-1}) / 2
+```
+```math
 HA_close = (HA_open_{0} + HA_close_{0} + HA_high_{0} + HA_low_{0}) / 4
 ```
 where,
