@@ -148,13 +148,19 @@ A stochastic oscillator is a momentum indicator comparing a particular closing p
 - Measure the momentum of an asset's price to determine trends and predict reversals
 - Measure recent prices on a scale of 0 to 100, with measurements above 80 indicating that an asset is overbought and measurements below 20 indicating that it is oversold.
 
+Overbought (超买) refers to a security that trades at a price level above its true (or intrinsic) value. Traders may expect a price correction or trend reversal, so they may sell the security
+
+Oversold (超卖) refers to a security that trades at a price level below its true value (lower than it should be). Traders may expect a price correct or trend reversal, so they may buy the security
+
 Stochastic oscillator charting generally consists of two lines: one reflecting the actual value of the oscillator for each session (%K) and one reflecting its three-day simple moving average (%D). These two lines are used to show the relationship between current and past prices. Because price is thought to follow momentum, the intersection of these two lines is considered to be a signal that a reversal may be in the works, as it indicates a large shift in momentum from day to day.
 
 Stochastics oscillator and the Relative Strength Index (RSI—another popular technical indicator) “capture” these wave-like price swings within certain limits, allowing you to measure the strength or “momentum” of these fluctuation
 
-RSI: The relative strength index (RSI) is a momentum indicator used in technical analysis. 
+RSI: 
+The relative strength index (RSI) is a momentum indicator used in technical analysis. 
 
 Difference between RSI and stochastic oscillator:
+
 The stochastic oscillator is predicated on the assumption that closing prices should close in the same general direction as the current trend. RSI tracks overbought and oversold levels by measuring the velocity of price movements. But both of them are used as overbought/oversold indicators.
 
 ```math
@@ -186,9 +192,11 @@ Use of the Stochastic Oscillator:
    When the %K line intersects the %D line and goes above it, this is a bullish scenario. Conversely, the %K line crossing from above to below the %D stochastic line gives a bearish sell signal.
 
 Limitation:
+
 The main shortcoming of the oscillator is its tendency to generate false signals. Especially during turbulent, highly volatile trading conditions. 
 
 Key idea: 
+
 Oscillator is primarily designed to measure the strength or weakness – not the trend or direction – of price action movement in a market.
 
 Reference:
@@ -217,6 +225,7 @@ Strategy:
    - Bulls Power is positive but moving toward 0 
 
 EMA: 
+
 Exponential Moving Average (EMA) is similar to Simple Moving Average (SMA), measuring trend direction over a period of time. However, whereas SMA simply calculates an average of price data, EMA applies more weight to data that is more current.
 
 - Calculation
@@ -241,6 +250,52 @@ Reference:
 - https://www.earnforex.com/guides/beginners-guide-to-the-bulls-power-and-bear-power-indicators-in-forex/
 - https://www.wallstreetoasis.com/resources/skills/trading-investing/exponential-moving-average-ema?gad_source=1&gclid=CjwKCAjw2Je1BhAgEiwAp3KY79ju6KkQcfLdgPu15O9FdI3_hygk4jLNwRRio2BvMarE9wi9YwyDlBoCCY8QAvD_BwE
 
+### 5 rsi (Relative Strength Index)
+The relative strength index (RSI) is a momentum indicator used in technical analysis. RSI measures the speed and magnitude of a security's recent price changes to evaluate overvalued or undervalued conditions in the price of that security.
 
+The RSI can  point to overbought and oversold securities and indicate securities that may be primed for a trend reversal or corrective pullback in price. It can signal when to buy and sell. Traditionally, an RSI reading of 70 or above indicates an overbought situation. A reading of 30 or below indicates an oversold condition.
+```math
+RSI_{step1} = 100-[100/(1+(Average gain/Average loss))]
+```
+where,
+- The average gain or loss are the average percentage gain or loss during the period and both of them take positive value
+- Price decreasing period counted as zero in average gain; Price increasing period counted as zero in average loss
+- The standard number of periods used to calculate the initial RSI value is 14
+
+Once 14 periods of data available then move to the second step of calculation
+```math
+RSI_{step2} = 100-[100/[1+(((Previous Average Gain * 13)+Current Gain)/((Previous Average Loss * 13)+Current Loss))]]
+```
+
+Plotting RSI
+The RSI will rise as the number and size of up days increase. It will fall as the number and size of down days increase.
+
+Why important:
+
+1. predict the price behavior of a security
+2. validate trends and trend reversals
+3. point to overbought and oversold securities
+4. provide short-term traders with buy and sell signals
+
+Investors create a horizontal trendline between the levels of 30 and 70 when a strong trend is in place to better identify the overall trend and extremes. Since the RSI is not as reliable in trending markets as it is in trading ranges. In addition, the singals given by the RSI is strong upward or downward trends often can be false
+
+Strategy:
+1. Overbought and Oversold
+2. Divergence : An RSI divergence occurs when price moves in the opposite direction of the RSI
+   - A bullish divergence occurs when the RSI displays an oversold reading (< 30) followed by a higher low that appears with lower lows in the price. 
+   - A bearish divergence occurs when the RSI creates an overbought reading (> 70) followed by a lower high that appears with higher highs on the price.
+3. RSI Midline Strategy
+   - Sell: When RSI has stayed above the 50 for awhile, go short when RSI closes below the 50 level
+   - Buy: When RSI has stayed below the 50 for awhile, go long when RSI closes above the 50 level
+4. RSI Exit Trading Strategy
+   - Sell: When the RSI gets above 70, sell after RSI closes below the 70 level
+   - Buy: When RSI gets below 30, buy after RSI closes above the 30 level
+5. Larry Connors RSI 2 Trading Strategy
+   - Sell: When RSI is overbought and price closes below the 200 SMA
+   - Buy: When RSI is oversold and price closes above the 200 SMA
+   
+Reference:
+- https://www.investopedia.com/terms/r/rsi.asp
+- https://www.tradingheroes.com/rsi-trading-strategies/
 
 
