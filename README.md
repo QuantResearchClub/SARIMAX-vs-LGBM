@@ -17,7 +17,6 @@ Storage for scripts and data
 - Liu Cuiyuan  A0253802L
 - Song Haoning A0253806A
 - Zhang Dawei A0275211N
-- He Zonghong
 
 #### 链接
 - 共享文件夹: https://drive.google.com/drive/folders/1G--QXQ0C4sCmrT5YMElurR_FCp-b6R-y
