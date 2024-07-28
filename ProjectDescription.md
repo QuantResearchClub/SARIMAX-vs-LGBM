@@ -89,4 +89,158 @@ where,
 Reference:
 - https://www.investopedia.com/terms/h/heikinashi.asp
 
+### 4 logret (The Log returns of Time series model)
+Log returns are a common way to measure the performance of an investment because they are additive over time then if we have a series of log returns for a period time, we can add them up to get the total log return for that period.
+```math
+log_return_t=log(price_t/price_{t-1})
+```
+where,
+- price_t is the price of the asset at time t and price_{t-1}is the asset at time t-1
+
+Normality
+A common argument for log returns is that they are normally distributed if prices are log normally distributed. 
+```math
+z~N(0,1)
+x=exp(μ+σz)
+log(x)~N(μ,σ^2)
+z_t=log(p_t)-log(p_t-1)
+```
+The advantages of log returns are:
+- 1.Additive
+- 2.Log returns are symmetric around zero
+- 3.Log returns are normally distributed
+- 4.Log returns simplify complex calculations
+
+Compare to return
+Returns are lower-bounded by -1. One cannot lose more than all of one’s money. However, log returns have an infinite support. And since the log function suppresses big positive values while emphasizing small negative values, log returns are more symmetric than returns. 
+Using simple returns for time series analysis can lead to misleading insights, especially when dealing with long-term data and significant price fluctuations.
+
+Simple returns:
+1. Analyzing short-term investment performance
+2. Dealing with small changes in asset prices
+3. Communicating financial data to a general audience
+
+Log returns:
+1. Analyzing long-term investment performance
+2. Working with continuous time series data and conducting mathematical modeling
+3. Seeking accuracy in compounding effects over time
+
+In time series analysis logrithms is often considered to stabilize the variance of a series. For a range of economic variables substantial forecasting improvements from taking logs are found if the log transformation actually stabilizes the variance of the underlying series.
+
+Strategy:
+1. Mean Reversion Strategy
+2. Momentum Trading Strategy
+3. Trend Following Strategy
+4. Volatility Breakout Strategy
+5. Risk Parity Strategy
+
+Reference:
+- https://medium.com/quant-factory/why-we-use-log-return-in-finance-349f8a2dc695
+- LUETKEPOHL, Helmut, XU, Fang, The Role of log Transformation in Forecasting Economic Variables, EUI MWP, 2009/06 - https://hdl.handle.net/1814/11150
+- https://gregorygundersen.com/blog/2022/02/06/log-returns/
+- https://medium.com/@manojkotary/simple-returns-vs-log-returns-a-comprehensive-comparative-analysis-for-financial-analysis-702403693bad
+
+
+### 3 stochastic_oscillator
+A stochastic oscillator is a momentum indicator comparing a particular closing price of a security to a range of its prices over a certain period of time. The sensitivity of the oscillator to market movements is reducible by adjusting that time period or by taking a moving average of the result. 
+- A technical indicator for generating overbought and oversold signals
+- Tend to vary around some mean price level since they rely on an asset's price history
+- Measure the momentum of an asset's price to determine trends and predict reversals
+- Measure recent prices on a scale of 0 to 100, with measurements above 80 indicating that an asset is overbought and measurements below 20 indicating that it is oversold.
+
+Stochastic oscillator charting generally consists of two lines: one reflecting the actual value of the oscillator for each session (%K) and one reflecting its three-day simple moving average (%D). These two lines are used to show the relationship between current and past prices. Because price is thought to follow momentum, the intersection of these two lines is considered to be a signal that a reversal may be in the works, as it indicates a large shift in momentum from day to day.
+
+Stochastics oscillator and the Relative Strength Index (RSI—another popular technical indicator) “capture” these wave-like price swings within certain limits, allowing you to measure the strength or “momentum” of these fluctuation
+
+RSI: The relative strength index (RSI) is a momentum indicator used in technical analysis. 
+
+Difference between RSI and stochastic oscillator:
+The stochastic oscillator is predicated on the assumption that closing prices should close in the same general direction as the current trend. RSI tracks overbought and oversold levels by measuring the velocity of price movements. But both of them are used as overbought/oversold indicators.
+
+```math
+%K = (Last closing price - lowest price)/(Highest price - lowest price) * 100
+%D = 3 day SMA of %K
+```
+where,
+- C is the last closing price
+- Lowest price for the time period
+- Highest prie for the time period
+- SMA is the simple moving average (the average price over the specified period)
+
+Use of the Stochastic Oscillator:
+1. Identify overbought and oversold levels
+
+   - Stochastic reading > 80 then overbought; Stochastic reading < 20 then oversold
+   - A sell signal is generated when the oscillator reading > 80 and then returns to < 80. A buy signal is indicated when the oscillator < 20 and then > 20. 
+   - Overbought and oversold levels mean that the security’s price is near the top or bottom, respectively, of its trading range for the specified time period.
+
+2. Divergence
+   - Divergence occurs when the security price is making a new high or low that is not reflected on the Stochastic Oscillator. Please note that the Stochastic Oscillator may give a divergence signal some time before price action changes direction.
+
+   eg. price moves to a new high but the oscillator does not move to the new high reading correspondingly, which may signal an impending market reversal from an uptrend to a downtrend. Same with the new low case
+
+3. Crossovers
+   - Crossovers refer to the point at which the fast stochastic line and the slow stochastic line intersect.
+   - Fast stochastic line: %K ; Slow stochastic line: %D 
+
+   When the %K line intersects the %D line and goes above it, this is a bullish scenario. Conversely, the %K line crossing from above to below the %D stochastic line gives a bearish sell signal.
+
+Limitation:
+The main shortcoming of the oscillator is its tendency to generate false signals. Especially during turbulent, highly volatile trading conditions. 
+
+Key idea: 
+Oscillator is primarily designed to measure the strength or weakness – not the trend or direction – of price action movement in a market.
+
+Reference:
+- https://www.investopedia.com/terms/s/stochasticoscillator.asp
+- https://www.britannica.com/money/stochastic-oscillator-technical-indicator
+- https://www.investopedia.com/terms/r/rsi.asp
+- https://www.investopedia.com/ask/answers/012015/what-are-differences-between-relative-strength-index-rsi-stochastic-oscillator.asp
+- https://corporatefinanceinstitute.com/resources/career-map/sell-side/capital-markets/stochastic-oscillator/
+
+### 4 bears_bulls_power
+The Bulls Power indicator is telling you how strong the bulls are (the buyers). The Bears Power indicator is telling you how strong the bears are (the sellers).
+```math
+Bulls Power =  High - EMA Bears Power = Low - EMA
+```
+where
+- EMA is the exponential moving average, use the 13-day EMA commonly
+
+Bulls Power and Bears Power indicators is the distance between the EMA and the high/low. This corresponds with the influence of the bulls/bears to continue to push price past the EMA. Note that positive values in the Bulls Power indicator indicate bullish strength, while negative values in the Bears Power indicator indicate bearish strength.
+
+Strategy:
+- Buy:
+   - The EMA is rising
+   - Bears Power is negative but moving closer to 0 
+- Sell: 
+   - The EMA is falling
+   - Bulls Power is positive but moving toward 0 
+
+EMA: 
+Exponential Moving Average (EMA) is similar to Simple Moving Average (SMA), measuring trend direction over a period of time. However, whereas SMA simply calculates an average of price data, EMA applies more weight to data that is more current.
+
+- Calculation
+   1. Calculate simple moving average (SMA)
+```math
+(Sum of closing prices of the specified time period)/(Number of observations)
+```
+   2. Calculate Multiplier
+```math
+Multiplier = {2/(Total number observations + 1)}
+```
+   3. Calculate exponential moving average (EMA)
+```math
+EMA = {Closing price of the stock * Multiplier} + {previous day's EMA * (1-Multiplier)}
+```
+- Advantages
+   1. Identifies and confirms market trends
+   2. Determine support and resistance levels
+   3. More sensitive
+
+Reference:
+- https://www.earnforex.com/guides/beginners-guide-to-the-bulls-power-and-bear-power-indicators-in-forex/
+- https://www.wallstreetoasis.com/resources/skills/trading-investing/exponential-moving-average-ema?gad_source=1&gclid=CjwKCAjw2Je1BhAgEiwAp3KY79ju6KkQcfLdgPu15O9FdI3_hygk4jLNwRRio2BvMarE9wi9YwyDlBoCCY8QAvD_BwE
+
+
+
 
