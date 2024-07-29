@@ -430,4 +430,54 @@ Reference:
 - https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/accumulation-distribution
 - https://trendspider.com/learning-center/accumulation-distribution-a-d-trading-strategies/
 
+### 9 aroon (Aroon Up and Aroon Down)
 
+The Aroon indicator is a technical indicator that can identify trend changes in the price of an asset, as well as that trend's strength. The Aroon indicator essentially measures the time between highs and the times between lows over various periods. Strong uptrends will regularly see new highs, and strong downtrends will regularly see new lows which primarily shown through an up line and a down line.
+
+The AroonUp and the AroonDown measure the strength of the uptrend and the strength of the downtrend, respectively. 
+
+These lines fluctuate between zero and 100. Values close to 100 indicate a strong trend and values near zero indicate a weak trend.
+- The lower the AroonUp, the weaker the uptrend and the stronger the downtrend.
+- The higher the AroonUp, the stronger the uptrend and the weaker the downtrend.
+
+Reading methods:
+- An AroonUp reading above 50 means the price made a new high within the last 12.5 periods. A reading near 100 means a high was seen very recently.
+- An AroonDown reading above 50 means the price made a new low within the last 12.5 periods. A reading near 100 means a low was seen very revently.
+- Crossovers can signal entry or exit points. 
+    1. Up crossing above Down can be a signal to buy. 
+    2. Down crossing below Up may be a signal to sell. 
+    3. When both indicators are below 50, it can signal that the price is consolidating. New highs or lows are not being created.
+
+key idea:
+- The indicator is used to identify the changes in asset price tends
+- The indicator measures the time between highs and the time between lows over various periods using the Aroon Up and Arron Down lines.
+- Price behavior is bullish when the AroonUp is above the AroonDown line and is bearish when the AroonDown is above the AroonUp line while.
+- A crossover of the AroonUp and AroonDown lines can signal trend changes.
+- The indicator moves between zero and 100—a reading above 50 indicates a high/low within the last 12 periods and one below 50 means the high/low was seen within the 13 periods.
+
+```math
+Aroon Up = [(25 - Periods since 25 period High)/25] x 100
+Aroon Down = [(25 - Periods since 25 period Low)/25] x 100
+```
+where,
+- The Aroon calculation requires the tracking of the high and low prices over 25 periods typically.
+- Trach the highs and lows for the last 25 periods on an asset
+- Note the number of periods since the last high and low
+
+Limitation: The indicator isn't factoring the size of moves, it only cares about the number of days since a high or low.
+
+Similar indicator -- Directional Movement Index (DMI)
+
+DMI: A technical indicator that uses up and down lines to show the direction of a trend.
+
+Difference between Aroon indicator and DMI
+- The Aroon indicator formulas are primarily focused on the amount of time between highs and lows. 
+- The DMI, on the other hand, measures the price difference between the current highs/lows and prior highs/lows.
+
+Strategies
+1. Trend Following
+2. Trend Reversals
+
+Reference:
+- https://www.investopedia.com/terms/a/aroon.asp
+- https://trendspider.com/learning-center/aroon-oscillator-a-guide-for-traders-and-investors/
