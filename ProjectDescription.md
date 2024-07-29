@@ -298,7 +298,7 @@ Reference:
 - https://www.investopedia.com/terms/r/rsi.asp
 - https://www.tradingheroes.com/rsi-trading-strategies/
 
-### 6 mom (momentum)
+### 6 mom (Momentum)
 
 Momentum is the speed or velocity of price changes in a stock, security, or tradable instrument. Momentum shows the rate of change in price movement over a period of time to help investors determine the strength of a trend. 
 
@@ -329,5 +329,52 @@ strategy:
 Reference:
 - https://www.litefinance.org/blog/for-beginners/best-technical-indicators/momentum-indicator/
 - https://www.investopedia.com/articles/technical/081501.asp
+
+### 7 obv （On balance volume）
+
+The on balance volume (OBV) indicator is a technical analysis tool used to detect the trading volume of an asset over time and uses volume flow to predict changes in stock price.. It measures the volume trend of an asset relative to its price movements and is calculated on a daily basis.
+
+Principle
+
+1. If an asset experiences a notable increase in trading volume, it signals increased demand for the asset then that could precede a positive price movement.
+2. If an asset experiences a notable decrease in trading volume, it signals decreased demand for the asset then that could precede a future drop in its price.
+
+Calculation
+
+The OBV calculates the cumulative total of an asset's volume, adding to it when the price goes up and subtracting from it when the price goes down. 
+```math
+Previous OBV + Current Volume
+```
+- when the current close price is higher than the previous close price
+```math
+Previous OBV - Current Volume
+```
+- when the current close price is lower than the previous close price
+```math
+Previous OBV stays fixed 
+```
+- when the current close price is equal to the previous close price
+
+Meaning
+
+1. When the asset's price is moving in line with the OBV, it may suggest that the current price trend is strong and may continue. 
+
+2. When the price is moving in the opposite direction of the OBV, it may suggest the price trend has weakened and may reverse.
+
+Strategy
+1. OBV trendline (Draw a trendline along OBV path)
+    - When the line is trending upward, then may suggest upward pressure, could use to place a buying position.
+    - When the line is trending downward, then may suggest downward pressure, could enter a selling position
+2. OBV divergence (Identify a divergence by looking at the price movement and the trendline of the OBV)
+    - If the price is increasing but the OBV trendline is moving down, then may signal a bearish divergence where the price is likely to come down again.
+    -  A bullish signal may be occurring if the price is falling while the OBV trendline is rising.
+3. OBV breakout
+4. OBV moving average (Calculate the moving average of OBV)
+    - When the OBV rises above its moving average, it may suggest bullishness.
+    - When the OBV falls below its moving average, it may suggest a selling trend.
+
+Reference:
+- https://www.ig.com/sg/trading-strategies/what-is-on-balance-volume--obv--and-how-does-it-work--230925
+- https://www.investopedia.com/terms/o/onbalancevolume.asp
 
 
