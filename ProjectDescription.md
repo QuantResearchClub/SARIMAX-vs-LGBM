@@ -37,16 +37,16 @@
 - `sd_w` standard deviation by week.
 - `bollinger_strat` 布林格参数, 用于估计股票的波动范围
 - `heikin_ashi` HA, 用于估计受市场噪音的影响
+- `logret` Log returns of Time series，具有时间可加性
+- `stochastic_oscillator` 用于预测市场转折点，判断Overbought and oversold
+- `bears_bulls_power` 用于提供市场强度，从而决定买卖
+- `rsi` 根据threshold决定买卖
 - `logret`
-- `stochastic_oscillator`
-- `bears_bulls_power`
-- `rsi`
-- `logret`
-- `mom`
-- `obv`
-- `accum_distribute`
-- `aroon`
-- `atr`
+- `mom` 用于计算momentum，从而决定买卖
+- `obv` 使用交易量变化预测价格，决定买卖
+- `accum_distribute` 用于帮助交易者确定价格趋势的强度和潜在的反转点
+- `aroon` 用于识别市场趋势的开始和结束，以及价格震荡和价格趋势
+- `atr` 用于衡量市场波动性
 
 ### 1. standard deviation
 We calculate the standard deviation by months and by weeks for further calculations.
