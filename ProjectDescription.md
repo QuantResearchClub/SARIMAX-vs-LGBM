@@ -481,3 +481,59 @@ Strategies
 Reference:
 - https://www.investopedia.com/terms/a/aroon.asp
 - https://trendspider.com/learning-center/aroon-oscillator-a-guide-for-traders-and-investors/
+
+### 10 atr (Average True Range)
+
+The average true range (ATR) is a indicator which measures market volatility by decomposing the entire range of an asset price for that period. Investors can use the indicator to determine the best time for trading and the ATR is then a moving average, generally using 14 days, of the true ranges.
+
+The true range indicator is taken as the greatest of the following: current high less the current low; the absolute value of the current high less the previous close and the absolute value of the current low less the previous close. 
+
+Key ideas: 
+- ATR is the market volatility indicator and shows investors the average range prices swing for an investment over a specified period.
+- A high value of average true range implies high volatility of the market price of the assets and a low value implies low price variations.
+
+$$
+\frac{Previous\space ATR(n-1)+TR}{n}
+$$
+where,
+- n is the number of periods
+- TR is the true range
+
+if there is no previous ATR vlue, then
+
+$$
+\frac{1}{n}\sum_{i}^nTR_i
+$$
+
+where,
+- TR_i is the particular true range such as first day's TR then second then third
+- n is the number of periods
+
+Have to fist calculate the true range
+$$
+TR = Max[(H-L),|H-C_p|,|L-C_p|]
+$$
+where,
+- H is today's high
+- L is today's low
+- $ C_p $ is Yesterday's closing price
+- Max is the highest value of the three terms
+
+Therefore,
+- $(H-L)$ is today's high minus the low
+- $|H-C_p|$ is the absolute value of today's high minus yesterday's closing price
+- $|L-C_p|$ is the absolute value of today's low minus yesterday's closing price
+
+ATR tell what:
+- A stock experiencing a high level of volatility has a higher ATR, and a lower ATR indicates lower volatility for the period evaluated.
+- The indicator does not indicate the price direction; instead, it is used primarily to measure volatility caused by gaps and limit up or down moves. 
+- The average true range values are useful for entry and exit triggers.
+- The ATR is commonly used as an exit method that can be applied no matter how the entry decision is made.
+
+Limitation:
+- ATR value cannot indicate a trend is about to reverse or not, if only can be used to compare against earlier readings to get a feel of a trend's strength or weakness.
+- ATR only measures volatility and not the direction of an asset's price. This can sometimes result in mixed signals, particularly when markets are experiencing pivots or when trends are at turning points.
+
+Reference:
+- https://www.investopedia.com/terms/a/atr.asp
+- https://corporatefinanceinstitute.com/resources/equities/average-true-range/
