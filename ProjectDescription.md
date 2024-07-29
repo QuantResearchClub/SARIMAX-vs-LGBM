@@ -298,4 +298,36 @@ Reference:
 - https://www.investopedia.com/terms/r/rsi.asp
 - https://www.tradingheroes.com/rsi-trading-strategies/
 
+### 6 mom (momentum)
+
+Momentum is the speed or velocity of price changes in a stock, security, or tradable instrument. Momentum shows the rate of change in price movement over a period of time to help investors determine the strength of a trend. 
+
+Momentum indicator and add it to the given dataset. Specifically, it calculates the sum of the closing prices over a specified window period. The momentum compares the current closing price with the previous closing price for n periods ago and gives a digital conclusion, according to which a momentum trader determines whether it is profitable to buy or sell, what is a potential profit for a trade, and whether a trend should reverse soon.
+
+Idea: A stock can be exhibit bullish momentum, meaning the price is rising, or bearish momentum where the price is steadily falling
+```math
+Momentum = V-V_x
+```
+where,
+- V = Lastest price
+- V_x = Closing price
+- x = Number of days ago
+
+Mesuring Momentum:
+1. typically use a 10-day time frame when measuring
+2. If the most recent closing price of the index is more than the closing price 10 trading days ago then the positive number will be plotted above the zero line
+3. If the lastest closing price is lower than the closing price 10 days ago, then the negative number will be plotted below the zero line
+4. The zero line is essentially an area where the index or stock is likely trading sideways or has no trend
+5. Once the stock's monmentum has increase (no matter bullish or bearish), the momentum line moves farther away from the zero line
+
+Special cases:
+1. When the momentum indicator slides below the zero line and then reverses ina n upward direction, it means downtrend is slowing down but not dowtrend is over.
+
+strategy:
+1. When the momentum indicators’ line breaks out the zero level upside, there is a potential buy signal and When the momentum indicators’ lines break out the zero line downside, there is a potential sell signal
+
+Reference:
+- https://www.litefinance.org/blog/for-beginners/best-technical-indicators/momentum-indicator/
+- https://www.investopedia.com/articles/technical/081501.asp
+
 
