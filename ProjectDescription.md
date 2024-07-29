@@ -377,4 +377,57 @@ Reference:
 - https://www.ig.com/sg/trading-strategies/what-is-on-balance-volume--obv--and-how-does-it-work--230925
 - https://www.investopedia.com/terms/o/onbalancevolume.asp
 
+### 8 accum_distribute (Accumulation/Distribution Line)
+
+The accumulation/distribution indicator (A/D) is a cumulative indicator that uses volume and price to assess whether a stock is being accumulated or distributed.  The A/D measure seeks to identify divergences between the stock price and the volume flow, this provides insight into how strong a trend is.
+
+- Eg.
+
+     if the price is rising but the indicator is falling, then it suggests that buying or accumulation volume may not be enough to support the price rise and a price decline could be forthcoming.
+
+Key idea:
+1. Gauges supply and demand of an asset or security by looking at where the price closed within the period’s range and then multiplying that by volume.
+2. The indicator is cumulative, meaning one period’s value is added or subtracted from the last.
+3. Generally, a rising A/D line helps confirm a rising price trend, while a falling A/D line helps confirm a price downtrend.
+```math
+MFM = [(Close - Low)-(High - Close)]/(High - Low)
+```
+where,
+- MFM is the money flow multiplier
+- Cloase is the closing price
+- Low price for the period
+- High price for the period
+```math
+Money Flow Volume = MFM x Period Volume
+A/D = Previous A/D + CMFV
+```
+where,
+- CMFV = Current period money flow volume
+
+Idea: The A/D line helps to show how supply and demand factors are influencing price. A/D can move in the same direction as price changes or in the opposite direction.
+
+A/D and OBV
+- Both of them use price and volume
+- Difference between them:
+    1. On-balance volume (OBV) looks at whether the current closing price is higher or lower than the prior close.
+        - If the close is higher, then the period’s volume is added. 
+        - If the close is lower, then the period’s volume is subtracted.
+    2. The A/D indicator doesn’t factor in the prior close and uses a multiplier based on where the price closed within the period’s range. 
+
+Strategy
+- Trend Identification
+    1. Upward trend continuation (a security is trending upward then A/D line should also be upward)
+         - Look for a series of higher highs in the A/D line to confirm the upward trend.
+    2. Downward trend continuation
+    3. Breakouts to the upside
+    4. Breakdowns to the downside
+-  Divergence
+    1. Bullish Divergence: A bullish divergence occurs when the price of a security is making lower lows, but the A/D line is making higher lows. 
+    2. Bearish Divergence: A bearish divergence occurs when the price of a security is making higher highs, but the A/D line is making lower highs.
+
+Reference:
+- https://www.investopedia.com/terms/a/accumulationdistribution.asp
+- https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/accumulation-distribution
+- https://trendspider.com/learning-center/accumulation-distribution-a-d-trading-strategies/
+
 
