@@ -20,4 +20,6 @@ Storage for scripts and data
 
 #### 链接
 - 共享文件夹: https://drive.google.com/drive/folders/1G--QXQ0C4sCmrT5YMElurR_FCp-b6R-y
-- 会议室: 
+- 会议室:
+- Google slides: https://docs.google.com/presentation/d/1EYMHD_771hhXVTvQ_qiauD9DGiJ0xNPOSDK4baT2n7g/edit?usp=sharing
+- Presentation draft: https://docs.google.com/document/d/1Miz706j13lIwBSvrAeUuVo-hhgVgccKqyG3ht_TVKs0/edit?usp=sharing
