@@ -8,51 +8,70 @@ from datetime import date
 
 tickers = ['AAPL','MSFT','NVDA','GOOG','AMZN','META','TSM','LLY','TSLA','AVGO']
 
-#%% include all data
-lgbm = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\LGBM.csv')
-lgbm['date'] = pd.to_datetime(lgbm['date'])
-lgbm.set_index('date', inplace=True)
-mvo = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\MVO\\MVO.csv')
+cwd = 'C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\'
+
+# include all data
+lgbm = pd.read_csv(cwd+'LGBM.csv')
+lgbm['Date'] = pd.to_datetime(lgbm['Date'])
+mvo = pd.read_csv(cwd+'MVO\\MVO.csv')
 mvo['date'] = pd.to_datetime(mvo['Date'])
 mvo.set_index('date', inplace=True)
-arima = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\ARIMA_Model\\ARIMA_result_return.csv')
+arima = pd.read_csv(cwd+'ARIMA_Model\\ARIMA_result_return.csv')
 arima = arima.drop(arima[~arima['Share'].isin(tickers)].index)
 arima['Date'] = pd.to_datetime(arima['Date'], dayfirst=True)
+arima.rename(columns={'predicted_mean': 'predicted', 'Share': 'ticker'}, inplace=True)
 
-# apply trading strategy to arima
-arima['top'] = arima.groupby('Date')['predicted_mean'].rank(method='first', ascending=False) <= 5
-arima['top'] = arima['top'].astype(int)
+# create ensemble strategy through MinMax scaling
+comb = pd.merge(arima, lgbm, on=['ticker','Date'], how = 'left')
+comb['x'] = (comb['predicted_x'] - comb['predicted_x'].min())/(comb['predicted_x'].max() - comb['predicted_x'].min())
+comb['y'] = (comb['predicted_y'] - comb['predicted_y'].min())/(comb['predicted_y'].max() - comb['predicted_y'].min())
+comb['predicted'] = (comb['x']+comb['y'])/2
+comb = comb[['Date','ticker','predicted','return_y']]
+comb.rename(columns={'return_y': 'return'}, inplace=True)
 
-# calculate returns
-x = []
-for ticker in arima['Share'].unique():
-    tt = arima[arima['Share'] == ticker]
-    tt['strat'] = tt['return']*tt['top'].shift(1)
-    x.append(tt)
-x = pd.concat(x)
-x = x.dropna()
+n = 5 # number of firms included in portfolio
 
-t = []
-for date in x['Date'].unique():
-    tt = x[x['Date'] == date]
-    trade = tt['strat'].sum()/5
-    ret = tt['return'].mean()
-    t.append(pd.DataFrame({'date': [date], 'return': [ret], 'trade': [trade],}))
-t = pd.concat(t)
-t.set_index('date', inplace=True)
+# apply trading strategy
+def trading(data):
+    data['top'] = data.groupby('Date')['predicted'].rank(method='first', ascending=False) <= n
+    data['top'] = data['top'].astype(int)
 
+    # calculate returns
+    x = []
+    for ticker in data['ticker'].unique():
+        tt = data[data['ticker'] == ticker]
+        tt['strat'] = tt['return']*tt['top'].shift(1)
+        x.append(tt)
+    x = pd.concat(x)
+    x = x.dropna()
+
+    t = []
+    for date in x['Date'].unique():
+        tt = x[x['Date'] == date]
+        trade = tt['strat'].sum()/n
+        ret = tt['return'].mean()
+        t.append(pd.DataFrame({'date': [date], 'return': [ret], 'trade': [trade],}))
+    t = pd.concat(t)
+    t.set_index('date', inplace=True)
+    return t
+
+lgbm_ = trading(lgbm)
+arima_ = trading(arima)
+comb_ = trading(comb)
 
 # plot everything
-lgbm['lgbm'] = lgbm['trade']
+lgbm_['lgbm'] = lgbm_['trade']
 mvo['mvo'] = mvo['trade']
-t['arima'] = t['trade']
-df = pd.concat([lgbm['lgbm'], mvo['mvo'], t['arima'], lgbm['return']], axis=1).dropna()
+arima_['arima'] = arima_['trade']
+comb_['ensemble'] = comb_['trade']
+df = pd.concat([lgbm_['lgbm'], mvo['mvo'], arima_['arima'], comb_['ensemble'], lgbm_['return']], axis=1).dropna()
 
 plt.figure(figsize=(10, 3))
 plt.plot(df['return'].cumsum(), label='benchmark')
 plt.plot(df['lgbm'].cumsum(), label='LGBM')
-plt.plot(df['mvo'].cumsum(), label='MVO')
 plt.plot(df['arima'].cumsum(), label='ARIMA')
+plt.plot(df['mvo'].cumsum(), label='MVO')
+plt.plot(df['ensemble'].cumsum(), label='ensemble')
 plt.xlabel('Date')
 plt.ylabel('Cumulative Return')
 plt.title('Cumulative Returns Over Time')
@@ -62,10 +81,11 @@ plt.show()
 
 # correlation
 correlation_matrix = df.corr()
-plt.figure(figsize=(12, 8))
-sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm')
-plt.title('Correlation Heatmap of Selected Columns')
-plt.show()
+print(correlation_matrix)
+#plt.figure(figsize=(12, 8))
+#sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm')
+#plt.title('Correlation Heatmap of Selected Columns')
+#plt.show()
 
 # sharpe ratio, returns, std
 def sharpe_ratio(data):
@@ -88,6 +108,7 @@ def sharpe_ratio(data):
 sharpe_ratio(df['lgbm'])
 sharpe_ratio(df['mvo'])
 sharpe_ratio(df['arima'])
+sharpe_ratio(df['ensemble'])
 sharpe_ratio(df['return'])
 
 # drawdown
@@ -111,6 +132,7 @@ def plot_drawdown(data):
 plot_drawdown(df['lgbm'])
 plot_drawdown(df['mvo'])
 plot_drawdown(df['arima'])
+plot_drawdown(df['ensemble'])
 plot_drawdown(df['return'])
 
 #%% CAPM alpha and beta (ignore for now, not enough data)
