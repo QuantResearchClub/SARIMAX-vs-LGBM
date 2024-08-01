@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 from sklearn import preprocessing, metrics
 from datetime import date
+from scipy.stats import ttest_rel
 
 tickers = ['AAPL','MSFT','NVDA','GOOG','AMZN','META','TSM','LLY','TSLA','AVGO']
 
@@ -134,6 +135,15 @@ plot_drawdown(df['mvo'])
 plot_drawdown(df['arima'])
 plot_drawdown(df['ensemble'])
 plot_drawdown(df['return'])
+
+# statistical significance
+results = {}
+for model in ['lgbm', 'mvo', 'arima', 'ensemble']:
+    t_stat, p_value = ttest_rel(df[model], df['return'])
+    results[model] = {'t_stat': t_stat, 'p_value': p_value}
+
+results_df = pd.DataFrame(results).T
+print(results_df)
 
 #%% CAPM alpha and beta (ignore for now, not enough data)
 ff5 = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\F-F_Research_Data_5_Factors_2x3_daily.csv', skiprows=3)
