@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 from sklearn import preprocessing, metrics
 from datetime import date
-from scipy.stats import ttest_rel
+from scipy.stats import ttest_rel, t
+from scipy import stats
 
 tickers = ['AAPL','MSFT','NVDA','GOOG','AMZN','META','TSM','LLY','TSLA','AVGO']
 
@@ -144,6 +145,59 @@ for model in ['lgbm', 'mvo', 'arima', 'ensemble']:
 
 results_df = pd.DataFrame(results).T
 print(results_df)
+
+# Plot Q-Q plots to compare 
+plt.figure(figsize=(12, 8))
+for i, column in enumerate(df.columns, 1):
+    plt.subplot(2, 3, i)
+    (osm, osr), (slope, intercept, r) = stats.probplot(df[column].dropna(), dist="t", sparams=(len(df)-1,))
+    plt.scatter(osm, osr*100, color='blue', alpha=0.5, label='train')
+    min_val = min(osm.min(), osr.min())
+    max_val = max(osm.max(), osr.max())
+    plt.plot([min_val, max_val], [min_val, max_val], color='black', linestyle='--')
+    plt.title(f'{column}')
+    plt.xlabel('Theoretical Quantiles')
+    plt.ylabel('Sample Quantiles')
+   # plt.legend()
+plt.tight_layout()
+plt.show()
+
+# VaR and ES
+confidence_level = 0.9
+
+def calculate_kde_es(data, confidence_level):
+    """ Calculate Expected Shortfall (ES) using KDE. """
+    kde = stats.gaussian_kde(data)
+    var = np.percentile(data, (1 - confidence_level) * 100)
+    tail_values = data[data <= var]
+    es = np.mean(tail_values)
+    return var, es
+
+es_results = {}
+
+plt.figure(figsize=(12, 8))
+for i, column in enumerate(df.columns, 1):
+    data = df[column].dropna()
+    kde = stats.gaussian_kde(data)
+    x = np.linspace(data.min(), data.max(), 1000)
+    y = kde(x)
+
+    plt.subplot(3, 2, i)
+    plt.plot(x, y, label=f'KDE of {column}')
+    plt.fill_between(x, y, where=(x <= np.percentile(data, (1 - confidence_level) * 100)), color='red', alpha=0.3)
+    
+    var, es = calculate_kde_es(data, confidence_level)
+    es_results[column] = {'VaR': var, 'ES': es}
+    
+    plt.axvline(var, color='red', linestyle='--', label=f'VaR ({confidence_level*100:.1f}%)')
+    plt.axvline(es, color='blue', linestyle='--', label=f'ES ({confidence_level*100:.1f}%)')
+    plt.title(f'KDE and ES for {column}')
+    plt.legend()
+plt.tight_layout()
+plt.show()
+
+es_df = pd.DataFrame.from_dict(es_results, orient='index')
+print(es_df)
 
 #%% CAPM alpha and beta (ignore for now, not enough data)
 ff5 = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\F-F_Research_Data_5_Factors_2x3_daily.csv', skiprows=3)
