@@ -1,3 +1,73 @@
+
+## LightGBM的优势和劣势
+LightGBM的训练器是相对于XGBosst的概念, 它最显著的优点在于将重复的数据进行组合再一起得到一个平均值(分类树状图), 这样降低了统计上的成本。
+
+
+## Kfolds 交叉训练
+因为数据量不够大, 我认为如果效果不理想, 可以采取kfolds的方式进行交叉验证以优化训练, 这里提供了第一个参数k
+
+KFold divides all the samples in groups of samples, called folds (if $k = n$, this is equivalent to the Leave One Out strategy), of equal sizes (if possible). The prediction function is learned using $k - 1$ folds, and the fold left out is used for test.
+
+我们采用的是`TimeSeriesSplit`, 问题是为什么采取3-folds进行训练以及对应集合的分开是如何影响结果的?
+```python
+## Test 01: test the k-folds split of the dataset.
+from Info import *
+from Functions import *
+from sklearn.model_selection import TimeSeriesSplit
+
+currShare = Share()
+currShare.setupShare(TICKERSLST[0], "Close", True, "")
+df_split = currShare.split_set
+
+n_fold = 3
+folds = TimeSeriesSplit(
+            n_splits = n_fold,
+            gap = 0,                  # gap between the train and test side of the splits. 
+            max_train_size = 10000,
+            test_size = 10,           # about 10% of training data
+        )
+splits = folds.split(df_split['train_x'], df_split['train_y'])
+for fold_n, (train_index, valid_index) in enumerate(splits):
+    print(fold_n, train_index, valid_index)
+    print(df_split['train_x'].iloc[train_index])
+    print(df_split['train_x'].iloc[valid_index])
+```
+
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score, KFold
+from sklearn.datasets import load_iris
+
+# 加载数据集（以鸢尾花数据集为例）
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# 创建随机森林分类器
+rf_classifier = RandomForestClassifier(n_estimators=100)
+
+# 创建十折交叉验证对象
+kfold = KFold(n_splits=10)
+
+# 执行十折交叉验证
+scores = cross_val_score(rf_classifier, X, y, cv=kfold)
+
+# 输出每折的准确率
+for i, score in enumerate(scores):
+    print("Fold {}: {:.4f}".format(i+1, score))
+
+# 输出平均准确率
+print("Average Accuracy: {:.4f}".format(scores.mean()))
+```
+
+
+策略:
+logret > 0 则采取买进
+
+
+
+```python
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -5,62 +75,60 @@ import matplotlib.pyplot as plt
 import statsmodels.formula.api as smf
 from sklearn import preprocessing, metrics
 from datetime import date
-from scipy.stats import ttest_rel, t
-from scipy import stats
-from Info import *
-from Functions import *
+from scipy.stats import ttest_rel
 
-# tickers = ['AAPL','MSFT','NVDA','GOOG','AMZN','META','TSM','LLY','TSLA','AVGO']
-tickers = TICKERSLST_USE2
+tickers = ['AAPL','MSFT','NVDA','GOOG','AMZN','META','TSM','LLY','TSLA','AVGO']
 
-# cwd = 'C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\'
-cwd = LOCATION + "\\DataResult\\"
+cwd = 'C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\'
 
 # include all data
-lgbm = pd.read_csv(cwd+'Result_LGBM.csv')
+lgbm = pd.read_csv(cwd+'LGBM.csv')
 lgbm['Date'] = pd.to_datetime(lgbm['Date'])
-mvo = pd.read_csv(cwd+'MVO.csv')
+mvo = pd.read_csv(cwd+'MVO\\MVO.csv')
 mvo['date'] = pd.to_datetime(mvo['Date'])
 mvo.set_index('date', inplace=True)
-arima = pd.read_csv(cwd+'Result_ARIMA.csv')
-arima = arima.drop(arima[~arima['ticker'].isin(tickers)].index)
-try: arima['Date'] = pd.to_datetime(arima['Date'], dayfirst=True) 
-except: pass
-
-# arima is x, lgbm is y
-arima.rename(columns={'predicted_mean': 'predicted'}, inplace=True)
-lgbm.rename(columns={'predicted_Y1': 'predicted'}, inplace=True)
-arima["Date"] = pd.to_datetime(arima["Date"])
-lgbm["Date"]  = pd.to_datetime(lgbm["Date"])
+arima = pd.read_csv(cwd+'ARIMA_Model\\ARIMA_result_return.csv')
+arima = arima.drop(arima[~arima['Share'].isin(tickers)].index)
+arima['Date'] = pd.to_datetime(arima['Date'], dayfirst=True)
+arima.rename(columns={'predicted_mean': 'predicted', 'Share': 'ticker'}, inplace=True)
 
 # create ensemble strategy through MinMax scaling
-comb = pd.merge(arima, lgbm, on=['ticker', 'Date'], how = 'left')
+comb = pd.merge(arima, lgbm, on=['ticker','Date'], how = 'left')
 comb['x'] = (comb['predicted_x'] - comb['predicted_x'].min())/(comb['predicted_x'].max() - comb['predicted_x'].min())
 comb['y'] = (comb['predicted_y'] - comb['predicted_y'].min())/(comb['predicted_y'].max() - comb['predicted_y'].min())
 comb['predicted'] = (comb['x']+comb['y'])/2
 comb = comb[['Date','ticker','predicted','return_y']]
 comb.rename(columns={'return_y': 'return'}, inplace=True)
 
+n = 5 # number of firms included in portfolio
+
 # apply trading strategy
-def trading(data, method):
-    # number of firms included in portfolio
-    n = 5 
-    print(data.columns)
-    myP= Portofolio()
-    myP.set_up(ipt_df = data, method = method)
-    # myP.trading(data, "Y1", n)
-    myP.trading(data, "predicted", n)
+def trading(data):
+    data['top'] = data.groupby('Date')['predicted'].rank(method='first', ascending=False) <= n
+    data['top'] = data['top'].astype(int)
 
-    myP.p_df_1.to_csv(f"{method}_1.csv")
-    myP.p_df_2.to_csv(f"{method}_2.csv")
-    myP.p_df_3.to_csv(f"{method}_3.csv")
+    # calculate returns
+    x = []
+    for ticker in data['ticker'].unique():
+        tt = data[data['ticker'] == ticker]
+        tt['strat'] = tt['return']*tt['top'].shift(1)
+        x.append(tt)
+    x = pd.concat(x)
+    x = x.dropna()
 
-    return myP.p_df_2
+    t = []
+    for date in x['Date'].unique():
+        tt = x[x['Date'] == date]
+        trade = tt['strat'].sum()/n
+        ret = tt['return'].mean()
+        t.append(pd.DataFrame({'date': [date], 'return': [ret], 'trade': [trade],}))
+    t = pd.concat(t)
+    t.set_index('date', inplace=True)
+    return t
 
-lgbm_ = trading(lgbm, "lgbm")
-exit()
-arima_ = trading(arima, "arima")
-comb_ = trading(comb, "comb")
+lgbm_ = trading(lgbm)
+arima_ = trading(arima)
+comb_ = trading(comb)
 
 # plot everything
 lgbm_['lgbm'] = lgbm_['trade']
@@ -81,12 +149,8 @@ plt.title('Cumulative Returns Over Time')
 plt.legend()
 plt.grid(False)
 plt.show()
-plt.savefig("Cumulative_Trading.jpg")
-
 
 # correlation
-############################################################################################################
-
 correlation_matrix = df.corr()
 print(correlation_matrix)
 #plt.figure(figsize=(12, 8))
@@ -151,59 +215,6 @@ for model in ['lgbm', 'mvo', 'arima', 'ensemble']:
 results_df = pd.DataFrame(results).T
 print(results_df)
 
-# Plot Q-Q plots to compare 
-plt.figure(figsize=(12, 8))
-for i, column in enumerate(df.columns, 1):
-    plt.subplot(2, 3, i)
-    (osm, osr), (slope, intercept, r) = stats.probplot(df[column].dropna(), dist="t", sparams=(len(df)-1,))
-    plt.scatter(osm, osr*100, color='blue', alpha=0.5, label='train')
-    min_val = min(osm.min(), osr.min())
-    max_val = max(osm.max(), osr.max())
-    plt.plot([min_val, max_val], [min_val, max_val], color='black', linestyle='--')
-    plt.title(f'{column}')
-    plt.xlabel('Theoretical Quantiles')
-    plt.ylabel('Sample Quantiles')
-   # plt.legend()
-plt.tight_layout()
-plt.show()
-
-# VaR and ES
-confidence_level = 0.9
-
-def calculate_kde_es(data, confidence_level):
-    """ Calculate Expected Shortfall (ES) using KDE. """
-    kde = stats.gaussian_kde(data)
-    var = np.percentile(data, (1 - confidence_level) * 100)
-    tail_values = data[data <= var]
-    es = np.mean(tail_values)
-    return var, es
-
-es_results = {}
-
-plt.figure(figsize=(12, 8))
-for i, column in enumerate(df.columns, 1):
-    data = df[column].dropna()
-    kde = stats.gaussian_kde(data)
-    x = np.linspace(data.min(), data.max(), 1000)
-    y = kde(x)
-
-    plt.subplot(3, 2, i)
-    plt.plot(x, y, label=f'KDE of {column}')
-    plt.fill_between(x, y, where=(x <= np.percentile(data, (1 - confidence_level) * 100)), color='red', alpha=0.3)
-    
-    var, es = calculate_kde_es(data, confidence_level)
-    es_results[column] = {'VaR': var, 'ES': es}
-    
-    plt.axvline(var, color='red', linestyle='--', label=f'VaR ({confidence_level*100:.1f}%)')
-    plt.axvline(es, color='blue', linestyle='--', label=f'ES ({confidence_level*100:.1f}%)')
-    plt.title(f'KDE and ES for {column}')
-    plt.legend()
-plt.tight_layout()
-plt.show()
-
-es_df = pd.DataFrame.from_dict(es_results, orient='index')
-print(es_df)
-
 #%% CAPM alpha and beta (ignore for now, not enough data)
 ff5 = pd.read_csv('C:\\Users\\dawei\\Dropbox\\NUS\\DSA5205\\project\\F-F_Research_Data_5_Factors_2x3_daily.csv', skiprows=3)
 ff5.drop(ff5.tail(62).index, inplace = True)
@@ -217,3 +228,11 @@ reg = smf.ols(formula = 'value_weighted_return ~ MKT + SMB + HML + RMW + CMA', d
 coefficients = reg.params
 t_stats = reg.tvalues
 results_df = pd.DataFrame({'Coefficient': coefficients, 'T-Statistic': t_stats})
+```
+
+
+
+## 数据对比
+下面是简单的数据对比, 
+```python
+```

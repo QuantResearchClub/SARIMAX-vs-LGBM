@@ -1,74 +1,98 @@
+from Functions import *
+from Prediction import *
+
+
+import pandas as pd
+import numpy as np
+import yfinance as yf
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn import preprocessing, metrics
+from sklearn.preprocessing import StandardScaler
+import lightgbm as lgb
+from sklearn.inspection import permutation_importance
+from datetime import date
+from sklearn.model_selection import TimeSeriesSplit
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
+# ----------------------------------------------------------------------------------------
+
+n_fold = 3 
+folds = TimeSeriesSplit(
+    n_splits = n_fold,
+    gap=0, # gap between the train and test side of the splits. 
+    max_train_size=10000, 
+    test_size=10, # about 10% of training data
+)
+
+
+
 """
-    # Training Set
-    s_timestamp = '2024-1-1'
-    f_timestamp = '2024-6-30'
-    yf_downloadDataClass(s_timestamp, f_timestamp, 2)
-
-    # Validation Set
-    s_timestamp = '2024-7-1'
-    f_timestamp = '2024-7-31'
-    yf_downloadDataClass(s_timestamp, f_timestamp, 2)
+- desti: A more detailed sepration name of dataset if needed.
+    for example, curr_ts = str(time.time()).split(".")[0] is a kind of desti.
 """
+desti = ""
+myHELP = HelpFunctions()
+myTrainer = TimeSeriesTraining()
+# myHELP.yf_downloadData(VS_TS, EF_TS, 3, desti)
+# for curr_share in TICKERSLST_USE: myHELP.yf_downloadSingleData(curr_share, VS_TS, EF_TS, 3, "")
+# 'ADBE', 'ABNB', 'GOOGL'
 
-from runFunctions import *
-from timeSeries import *
+SHARESLST = TICKERSLST_USE2
+print(SHARESLST)
 
-ts_ts = '2023-1-1' 
-tf_ts = '2023-12-31'
-vs_ts = '2024-1-1'
-vf_ts = '2024-6-30'
-es_ts = '2024-7-1'
-ef_ts = '2024-7-31'
+# select_method = "MVO", "LGBM", "ARIMA"
+def result_(select_method):
+    notFirst = False
+    for currShareName in SHARESLST:
+        currShare = Share()
+        currShare.setupShare(currShareName, "return", True, desti)
+        currShare.switchLst = SWITCHLST_F
+        # currShare.display()
+        # for df_name in currShare.split_set.keys(): print(currShare.split_set[df_name])
+        currShare.save()
 
-def downloadData():
-    myKernel = Kernel()
-    myKernel.yf_downloadData(ts_ts, tf_ts, 2, "TrainingSet")
-    myKernel.yf_downloadData(vs_ts, vf_ts, 2, "ValidationSet")
-    myKernel.yf_downloadData(es_ts, ef_ts, 2, "TestingSet")
+        train_Columns = list(currShare.split_set["train_x"].columns).copy()
+        train_Columns.remove("Y1")
+        # train_Columns.remove("return")
+        predicted_df = pd.DataFrame()
 
-def runData(targetShare: str, loc: str, ts_ts, tf_ts):
-    t_DS = pd.read_csv(loc + "_".join([ts_ts, tf_ts, targetShare]) + ".csv")
-    my_tShare = TradeData()
-    my_tShare.setup(t_DS, ts_ts, tf_ts, targetShare)
-    my_tShare.std()
-    my_tShare.bollinger_strat(14, 2)
-    my_tShare.heikin_ashi()
-    my_tShare.logret()
-    my_tShare.data = my_tShare.data.fillna(0)
-    my_tShare.to_datetime("Date")
+        # StrategyPart - LGBM
+        if (select_method == "LGBM"):
+            predicted_df = myTrainer.ts_predict_fn(currShare.split_set, train_Columns)
+            predicted_df['ticker'] = currShare.stock_name
+            predicted_df['pTradeRate'] = predicted_df.apply(lambda row: (row['Y1'] if row['predicted_Y1'] > 0 else 0), axis=1)
+            predicted_df["tTradeBool"] = predicted_df.apply(lambda row: (row['Y1'] if row['Y1'] > 0 else 0), axis=1)
+            print(predicted_df)
+
+        # StrategyPart - ARIMA
+        elif (select_method == "ARIMA"):
+            predicted_df = myTrainer.arima_predict_fn(currShare.split_set, train_Columns, (1, 1, 1), (1, 1, 1, 12))
+            predicted_df['ticker'] = currShare.stock_name
+            # predicted_df['pTradeRate'] = predicted_df.apply(lambda row: (row['Y1'] if row['predicted_Y1'] > 0 else 0), axis=1)
+            # predicted_df["tTradeBool"] = predicted_df.apply(lambda row: (row['Y1'] if row['Y1'] > 0 else 0), axis=1)
+        
+        # StrategyPart - MOV
+        elif (select_method == "MOV"):
+            # predicted_df['ticker'] = currShare.stock_name
+            pass
+
+        # Save and append the result to the result we want to have.
+        # myHELP.save_file(currShareName, predicted_df, "", "predicted_")
+        if (notFirst):
+            predicted_df.to_csv(f'Result_{select_method}.csv', mode='a', index=True, header=False)
+        else:
+            predicted_df.to_csv(f'Result_{select_method}.csv', mode='w', index=True, header=True)
+            notFirst = True
+
+result_("LGBM")
+result_("ARIMA")
+
+
+
     
-    my_tShare.data.to_csv(loc + "_".join([ts_ts, tf_ts, targetShare, "Processed.csv"]))
-    return my_tShare
-
-def run_share(share: str):
-    temp_result_lst = ["TrainingSet", "ValidationSet", "TestingSet"]
-    temp_result_dict = dict(zip(temp_result_lst, [] * len(temp_result_lst)))
-
-    for verb in temp_result_lst:
-        s_ts, f_ts =  ts_ts, tf_ts
-        if (verb == "ValidationSet"): s_ts, f_ts =  vs_ts, vf_ts
-        if (verb == "TestingSet"): s_ts, f_ts =  es_ts, ef_ts
-        temp_result = runData(share, "Dataset\\" + share + "\\" + verb + "\\", s_ts, f_ts)
-        ans = temp_result.data.copy()
-        temp_result_dict[verb] = ans
-
-    myTStrain = TimeSeries()
-    myTStrain.setup_TStrain(
-        df_predict = pd.DataFrame(),
-        df_train = temp_result_dict["TrainingSet"],
-        df_test  = temp_result_dict["TestingSet"],
-        df_valid = temp_result_dict["ValidationSet"],
-        target = "return",
-        ipt_cols = ['High','Low','Open','Volume', "Close", 'sd_m', 'sd_w', 'boll_high', 'boll_low', 'open_HA', 'close_HA'] 
-    )
-
-    myTStrain.ARIMA_predict(myTStrain.target, myTStrain.columns, 1, 1, 1)
-
-
-"""
-    myTStrain.optuna_paras(n_trials = 10)
-    print(myTStrain.df_predicted)
-"""
-# downloadData()
-run_share(share = "XEL")
-
+    
