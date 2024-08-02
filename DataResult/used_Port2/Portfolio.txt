@@ -1,0 +1,1 @@
+TICKERSLST_USE2 = ['WBD', 'ODFL', 'CMCSA', 'PYPL', 'KHC', 'GILD', 'GEHC', 'FAST', 'BKR', 'ADP']
