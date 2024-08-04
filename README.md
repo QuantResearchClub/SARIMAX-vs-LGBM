@@ -23,3 +23,4 @@ Storage for scripts and data
 - 会议室:
 - Google slides: https://docs.google.com/presentation/d/1EYMHD_771hhXVTvQ_qiauD9DGiJ0xNPOSDK4baT2n7g/edit?usp=sharing
 - Presentation draft: https://docs.google.com/document/d/1Miz706j13lIwBSvrAeUuVo-hhgVgccKqyG3ht_TVKs0/edit?usp=sharing
+- ARIMA & LGBM原理 & indicators：https://docs.google.com/document/d/19EVXLERsxVkwD9B_fYFL3JEazEYoPLapEqHr956oGjg/edit?usp=sharing 
