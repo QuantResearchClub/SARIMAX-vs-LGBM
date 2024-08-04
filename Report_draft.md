@@ -1,7 +1,6 @@
 
 Group 5:
-# 1. Abstract
-
+# Abstract
 ### 1.1. Our group target:
 The topic of our group to investigate on the performance of predictions among different time-series models, we find there are not adequate research on this topic, hence introduces a comparison between them.
 
@@ -26,4 +25,7 @@ We suggested by using a composition model of ARIMA and LGBM for limited-time per
 - Integrate and test the code developed for the project.
 - Provide the data procession part scripts, include downloading, sorting, cleaning and training.
 - Provide the ARIMA part for predictions.
+
+# Outcomes
+## 
   
