@@ -31,9 +31,13 @@ We suggested by using a composition model of ARIMA and LGBM for limited-time per
 While Kobiela (2022) suggests that ARIMA model performed (多少程度) better than LSTM model did on NASDAQ stock exchange data by providing a better accuracy as well as stability.
 
 ## 3. Data:
-Our dataset is built on the Nasdaq-100 index, we pick the historical constitutents of this data in 2024 from Jan 1st to June 30th for training, and introduces the data in July for backtests and further testing. The reason we choose Nasdaq 100 is because it is consist of the 100 biggest non-financial companies, provides good investiment diversification, high liquidity and 
+Our dataset is built on the Nasdaq-100 index, we picked the historical constitutents of this data in 2024 from Jan 1st to June 30th for training, and introduces the data in July for backtests and further testings. The reason we choose Nasdaq 100 is because it is consist of the 100 biggest non-financial companies (Nasdaq, 2024), which are of good investiment diversification, high liquidity and stable market structure, hence fits the quant trading. (Hasbrouck, 2007). 
 
-## 4. Model:
+We downloaded the data from the yahoo finance and the original data consists of the daily data of close price, open price, high price, low price and the trading volume of every ticker listed. For a further procession of these sources, we introduce further indicators includes
+
+[1] https://indexes.nasdaq.com/docs/Methodology_NDX.pdf
+[2] Hasbrouck, J. (2007). Empirical Market Microstructure: The Institutions, Economics, and Econometrics of Securities Trading. Oxford University Press.
+## 4. Methodology:
 ### 4.1 MOV Model
 
 ### 4.2 LGBM Model
@@ -55,5 +59,5 @@ Our dataset is built on the Nasdaq-100 index, we pick the historical constituten
 
 
 # Reference
-[1] https://indexes.nasdaq.com/docs/Methodology_NDX.pdf
+
   
