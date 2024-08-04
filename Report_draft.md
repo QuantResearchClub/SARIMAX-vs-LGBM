@@ -27,6 +27,37 @@ We suggested by using a composition model of ARIMA and LGBM for limited-time per
 - Provide the ARIMA part for predictions.
 
 # Outcomes
-# Introductions:
+# 2. Introductions:
 While Kobiela (2022) suggests that ARIMA model performed (多少程度) better than LSTM model did on NASDAQ stock exchange data by providing a better accuracy as well as stability.
+
+# 3. Data:
+Our dataset is built on the Nasdaq-100 index, we pick the historical constitutents of this data from 
+
+# 4. Model:
+## 4.1 MOV Model
+
+## 4.2 LGBM Model
+
+## 4.3 ARIMA Model
+
+## 4.4 Ensemble Model
+
+# 5. Performance Evaluation:
+## 5.1 Portofolio Picked
+
+## 5.2 Cumulative Return
+
+## 5.3 QQ-plot and data analysis
+
+## 5.4 Expected Shortfall and Value at risk
+
+
+
+
+
+
+
+
+# Reference
+[1] https://indexes.nasdaq.com/docs/Methodology_NDX.pdf
   
