@@ -1,4 +1,4 @@
-
+![image](https://github.com/user-attachments/assets/2f1938cb-7ab2-40cb-84ed-26163bb79f2a)
 Group 5:
 # Abstract
 ### 1.1. Our group target:
@@ -27,5 +27,6 @@ We suggested by using a composition model of ARIMA and LGBM for limited-time per
 - Provide the ARIMA part for predictions.
 
 # Outcomes
-## 
+# Introductions:
+While Kobiela (2022) suggests that ARIMA model performed (多少程度) better than LSTM model did on NASDAQ stock exchange data by providing a better accuracy as well as stability.
   
